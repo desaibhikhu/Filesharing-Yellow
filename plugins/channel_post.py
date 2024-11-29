@@ -54,6 +54,7 @@ async def channel_post(client: Client, message: Message):
     media = message.document or message.video or message.audio or message.photo
     if media:
         file_name = media.file_name if media.file_name else ""
+        caption = media.caption if media.caption else ""
         file_size = humanbytes(media.file_size) if media.file_size else "N/A"
         duration = TimeFormatter(media.duration * 1000) if hasattr(media, 'duration') and media.duration else "N/A"
     else:
