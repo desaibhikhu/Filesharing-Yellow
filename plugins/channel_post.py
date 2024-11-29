@@ -20,6 +20,18 @@ def humanbytes(size):
         n += 1
     return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
 
+def TimeFormatter(milliseconds: int) -> str:
+    # Convert milliseconds to a human-readable format
+    seconds, milliseconds = divmod(int(milliseconds), 1000)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    tmp = ((str(days) + " days, ") if days else "") + \
+        ((str(hours) + " hrs, ") if hours else "") + \
+        ((str(minutes) + " min, ") if minutes else "") + \
+        ((str(seconds) + " sec, ") if seconds else "") + \
+        ((str(milliseconds) + " millisec, ") if milliseconds else "")
+    return tmp[:-2]
 
 @Bot.on_message(filters.private & filters.user(ADMINS) & ~filters.command(['start','users','broadcast','batch','genlink','stats','auth_secret','deauth_secret', 'auth', 'sbatch', 'exit', 'add_admin', 'del_admin', 'admins', 'add_prem', 'ping', 'restart', 'ch2l', 'cancel']))
 async def channel_post(client: Client, message: Message):
@@ -40,13 +52,14 @@ async def channel_post(client: Client, message: Message):
     #Asuran
     # get media type
     media = message.document or message.video or message.audio or message.photo
-    # get file name
-    file_name = media.file_name if media.file_name else ""
-    # get file size
-    file_size = humanbytes(media.file_size)
-    # get caption (if any)
-    caption = message.caption if media.file_name else ""
-
+    if media:
+        file_name = media.file_name if media.file_name else ""
+        file_size = humanbytes(media.file_size) if media.file_size else "N/A"
+        duration = TimeFormatter(media.duration * 1000) if hasattr(media, 'duration') and media.duration else "N/A"
+    else:
+        file_name = ""
+        file_size = "N/A"
+        duration = "N/A"
 
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
     await reply_text.edit(f"<b>{caption} ~ [⏰ {duration}] - 📁 {file_size}\n\nLink: {link}</b>", reply_markup=reply_markup, disable_web_page_preview=True)
