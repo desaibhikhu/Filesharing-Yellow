@@ -1,5 +1,5 @@
 import asyncio
-from pyrogram import filters, Client
+from pyrogram import filters, Client, emoji
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import FloodWait
 import random
@@ -48,23 +48,21 @@ async def channel_post(client: Client, message: Message):
     converted_id = post_message.id * abs(client.db_channel.id)
     string = f"get-{converted_id}"
     base64_string = await encode(string)
-    link = f"https://tamilserialbot1.jasurun.workers.dev?start={base64_string}"
+    link = f"https://tamilserialbot.jasurun.workers.dev?start={base64_string}"
     #Asuran
-    # get media type
     media = message.document or message.video or message.audio or message.photo
     if media:
         file_name = media.file_name if media.file_name else ""
-        
         file_size = humanbytes(media.file_size) if media.file_size else "N/A"
         duration = TimeFormatter(media.duration * 1000) if hasattr(media, 'duration') and media.duration else "N/A"
     else:
         file_name = ""
         file_size = "N/A"
         duration = "N/A"
-    caption = message.caption if media.file_name else ""
+
 
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
-    await reply_text.edit(f"<b>{caption} ~ [⏰ {duration}] - 📁 {file_size}\n\nLink: {link}</b>", reply_markup=reply_markup, disable_web_page_preview=True)
+    await reply_text.edit(f"<b>{file_name} ~ [⏰ {duration}] - 📁 {file_size}\n\nLink: {link}</b>", reply_markup=reply_markup, disable_web_page_preview=True)
     
     if not DISABLE_CHANNEL_BUTTON:
         try:
@@ -84,7 +82,7 @@ async def new_post(client: Client, message: Message):
     converted_id = message.id * abs(client.db_channel.id)
     string = f"get-{converted_id}"
     base64_string = await encode(string)
-    link = f"https://tamilserialbot1.jasurun.workers.dev?start={base64_string}"
+    link = f"https://tamilserialbot.jasurun.workers.dev?start={base64_string}"
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
     try:
         await message.edit_reply_markup(reply_markup)
