@@ -61,7 +61,7 @@ async def channel_post(client: Client, message: Message):
         file_name = ""
         file_size = "N/A"
         duration = "N/A"
-    caption = message.caption if media.file_name else ""
+    caption = message.caption if media.{file_name} else ""
 
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("🔁 Share URL", url=f'https://telegram.me/share/url?url={link}')]])
     await reply_text.edit(f"<b>{caption} ~ [⏰ {duration}] - 📁 {file_size}\n\nLink: {link}</b>", reply_markup=reply_markup, disable_web_page_preview=True)
